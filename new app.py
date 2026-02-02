@@ -59,7 +59,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR: LOGO & STATUS ---
+# --- SIDEBAR: LOGO, STATUS & NEWS ---
 with st.sidebar:
     try:
         logo = Image.open("vantix.png")
@@ -74,6 +74,19 @@ with st.sidebar:
     st.write("✅ All Nodes Active")
     st.write("✅ Firewall Layer 7: Enabled")
     
+    # --- LIVE THREAT FEED (SIDEBAR) ---
+    st.divider()
+    st.subheader("📡 Live Threat Feed")
+    st.caption("Feb 2, 2026")
+    news = [
+        "⚠️ FCC warns of telecom ransomware",
+        "🌐 AI exploits found in browsers",
+        "🔒 MS begins NTLM phase-out"
+    ]
+    for item in news:
+        st.markdown(f"**{item}**")
+    
+    st.divider()
     if st.button("🚨 EMERGENCY LOCKDOWN"):
         st.error("LOCKDOWN INITIATED")
 
@@ -87,6 +100,17 @@ col1.metric("Active Threats", "14", "+2")
 col2.metric("Nodes Protected", "1,850", "100%")
 col3.metric("Blocked IPs", "912", "+12%")
 col4.metric("Risk Index", "Stable", "-5%")
+
+# --- NEW: GLOBAL THREAT MAP ---
+st.divider()
+st.subheader("🌐 Global Threat Intelligence Mesh")
+# Generate random global points
+map_data = pd.DataFrame(
+    np.random.randn(50, 2) / [10, 20] + [25, 10], 
+    columns=['lat', 'lon']
+)
+st.map(map_data, color="#1e40af", size=25)
+st.caption("📍 Blue indicators represent high-risk IP origins being mitigated by Vantix.")
 
 # --- NEURAL SCANNER ---
 st.divider()
