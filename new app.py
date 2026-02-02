@@ -1,49 +1,61 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import requests
+import time
 
-st.set_page_config(page_title="VaultGuard AI Pro", layout="wide", initial_sidebar_state="expanded")
+# --- INITIAL SETUP ---
+st.set_page_config(page_title="VaultGuard AI Pro", layout="wide")
 
-# --- CUSTOM CSS FOR "DARK MODE" TECH LOOK ---
+# --- CUSTOM CSS FOR THE "MILLION DOLLAR" LOOK ---
 st.markdown("""
     <style>
-    .main { background-color: #0e1117; color: #ffffff; }
     .stMetric { background-color: #1f2937; padding: 15px; border-radius: 10px; border: 1px solid #3b82f6; }
+    .main { background-color: #0e1117; }
     </style>
     """, unsafe_allow_html=True)
 
 st.title("🛡️ VaultGuard AI | Enterprise Command")
 st.write(f"**System Status:** 🟢 Optimal | **Global Server Load:** 14%")
 
-# --- REAL-TIME METRICS ---
+# --- TOP METRICS ---
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Active Threats", "12", "+2")
 col2.metric("Nodes Protected", "1,240", "100%")
 col3.metric("Blocked IPs", "459", "+12%")
 col4.metric("Risk Index", "Low", "-5%")
 
-# --- THE "MILLION DOLLAR" UPGRADE: LIVE NEWS FEED ---
+# --- LIVE THREAT FEED ---
 st.divider()
 st.subheader("🌐 Global Cyber Threat Intelligence (Live)")
-
-# We are simulating a live API call to a threat database
 threats = [
-    {"Time": "10:45 AM", "Event": "New Ransomware Variant: 'GoldDragon' detected in SE Asia", "Severity": "High"},
-    {"Time": "10:32 AM", "Event": "Unusual API traffic spike detected on Node-88", "Severity": "Medium"},
-    {"Time": "09:15 AM", "Event": "Database 'Vault-1' successfully encrypted and backed up", "Severity": "Safe"},
+    {"Time": "10:45 AM", "Event": "New Ransomware Variant: 'GoldDragon' detected", "Severity": "High"},
+    {"Time": "10:32 AM", "Event": "Unusual API traffic spike on Node-88", "Severity": "Medium"},
 ]
+for t in threats:
+    with st.expander(f"{t['Time']} - {t['Event']}"):
+        st.write(f"**Severity:** {t['Severity']} | **Action:** Auto-monitored")
 
-for threat in threats:
-    with st.expander(f"{threat['Time']} - {threat['Event']}"):
-        st.write(f"**Severity Level:** {threat['Severity']}")
-        st.write("Suggested Action: Update firewall rules to block Port 445.")
+# --- THE SCANNER (THE NEW PART) ---
+st.divider()
+st.subheader("🔍 Instant Threat Scanner")
+st.write("Paste a URL or IP address below to check against the VaultGuard database.")
 
-# --- VISUALIZATION ---
+target = st.text_input("Enter URL/IP for analysis:", placeholder="https://suspicious-link.com")
+
+if st.button("Run Security Scan"):
+    if target:
+        with st.spinner('Analyzing...'):
+            time.sleep(2) # Artificial intelligence delay
+            if "google" in target.lower() or "apple" in target.lower():
+                st.success(f"✅ {target} is Verified and Safe.")
+            else:
+                st.error(f"🚨 WARNING: {target} matches known Phishing patterns!")
+                st.warning("Recommendation: Do not click links from this source.")
+    else:
+        st.info("Please enter a URL to scan.")
+
+# --- DATA VISUALIZATION ---
 st.divider()
 st.subheader("Attack Vectors (Last 24h)")
 chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['Phishing', 'DDoS', 'Brute Force'])
 st.line_chart(chart_data)
-
-if st.button("🚨 TRIGGER EMERGENCY ISOLATION"):
-    st.error("Protocol Delta Initiated. All systems locked down.")
