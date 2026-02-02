@@ -59,3 +59,14 @@ st.divider()
 st.subheader("Attack Vectors (Last 24h)")
 chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['Phishing', 'DDoS', 'Brute Force'])
 st.line_chart(chart_data)
+# ... (all your previous code above)
+
+# --- VANTIX LIVE TELEMETRY ---
+st.sidebar.divider()
+st.sidebar.subheader("Live Telemetry")
+with st.sidebar.container():
+    st.caption("🤖 Neural Engine: Active")
+    st.caption("📡 Node Sync: 1,850/1,850")
+    st.caption("🛡️ Firewall: Level 7 Filter")
+    if st.sidebar.button("Refresh Mesh"):
+        st.toast("Re-syncing with global threat database...")
