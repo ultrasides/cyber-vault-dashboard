@@ -2,60 +2,110 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
+from PIL import Image
 
-# --- INITIAL SETUP ---
-st.set_page_config(page_title="VaultGuard AI Pro", layout="wide")
+# --- BRAND CONFIGURATION ---
+BRAND_NAME = "Vantix"
+TAGLINE = "Autonomous Neural Defense"
 
-# --- CUSTOM CSS FOR THE "MILLION DOLLAR" LOOK ---
-st.markdown("""
+st.set_page_config(page_title=BRAND_NAME, layout="wide", initial_sidebar_state="expanded")
+
+# --- LIGHT THEME CSS ---
+st.markdown(f"""
     <style>
-    .stMetric { background-color: #1f2937; padding: 15px; border-radius: 10px; border: 1px solid #3b82f6; }
-    .main { background-color: #0e1117; }
+    /* 1. Background to White */
+    .stApp {{
+        background-color: #ffffff !important;
+    }}
+    
+    /* 2. Headings to Black */
+    h1, h2, h3, h4, h5, h6, [data-testid="stHeader"] {{
+        color: #000000 !important;
+        font-family: 'Inter', sans-serif;
+        font-weight: 800 !important;
+    }}
+
+    /* 3. Text to Blue */
+    p, span, label, div, .stMarkdown {{
+        color: #1e40af !important; /* Deep Royal Blue */
+    }}
+
+    /* Sidebar Styling (Slight Grey for contrast) */
+    section[data-testid="stSidebar"] {{
+        background-color: #f8fafc !important;
+        border-right: 1px solid #e2e8f0;
+    }}
+
+    /* Metric Boxes (Light Blue Border) */
+    div[data-testid="metric-container"] {{
+        background-color: #f0f9ff !important;
+        border: 2px solid #3b82f6 !important;
+        padding: 15px !important;
+        border-radius: 10px !important;
+    }}
+    
+    /* Metric Values (Keep them distinct) */
+    [data-testid="stMetricValue"] {{
+        color: #1d4ed8 !important;
+    }}
+
+    /* Buttons (Solid Blue) */
+    .stButton>button {{
+        background-color: #2563eb !important;
+        color: white !important;
+        border-radius: 6px !important;
+        border: none !important;
+    }}
     </style>
     """, unsafe_allow_html=True)
 
-st.title("🛡️ VaultGuard AI | Enterprise Command")
-st.write(f"**System Status:** 🟢 Optimal | **Global Server Load:** 14%")
+# --- SIDEBAR: LOGO & STATUS ---
+with st.sidebar:
+    try:
+        logo = Image.open("vantix.png")
+        st.image(logo, use_container_width=True)
+    except:
+        st.title(f"🛡️ {BRAND_NAME}")
+    
+    st.caption(f"Enterprise Security | v1.2.0")
+    st.divider()
+    
+    st.subheader("System Health")
+    st.write("✅ All Nodes Active")
+    st.write("✅ Firewall Layer 7: Enabled")
+    
+    if st.button("🚨 EMERGENCY LOCKDOWN"):
+        st.error("LOCKDOWN INITIATED")
 
-# --- TOP METRICS ---
+# --- MAIN DASHBOARD ---
+st.title(f"🛡️ {BRAND_NAME} | Command Center")
+st.write(f"Official Security Dashboard for {BRAND_NAME} Neural Systems.")
+
+# --- METRICS SECTION ---
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("Active Threats", "12", "+2")
-col2.metric("Nodes Protected", "1,240", "100%")
-col3.metric("Blocked IPs", "459", "+12%")
-col4.metric("Risk Index", "Low", "-5%")
+col1.metric("Active Threats", "14", "+2")
+col2.metric("Nodes Protected", "1,850", "100%")
+col3.metric("Blocked IPs", "912", "+12%")
+col4.metric("Risk Index", "Stable", "-5%")
 
-# --- LIVE THREAT FEED ---
+# --- NEURAL SCANNER ---
 st.divider()
-st.subheader("🌐 Global Cyber Threat Intelligence (Live)")
-threats = [
-    {"Time": "10:45 AM", "Event": "New Ransomware Variant: 'GoldDragon' detected", "Severity": "High"},
-    {"Time": "10:32 AM", "Event": "Unusual API traffic spike on Node-88", "Severity": "Medium"},
-]
-for t in threats:
-    with st.expander(f"{t['Time']} - {t['Event']}"):
-        st.write(f"**Severity:** {t['Severity']} | **Action:** Auto-monitored")
+st.subheader("🔍 Security Scanner")
+target = st.text_input("Analyze URL or IP Address:", placeholder="e.g., example.com")
 
-# --- THE SCANNER (THE NEW PART) ---
-st.divider()
-st.subheader("🔍 Instant Threat Scanner")
-st.write("Paste a URL or IP address below to check against the VaultGuard database.")
-
-target = st.text_input("Enter URL/IP for analysis:", placeholder="https://suspicious-link.com")
-
-if st.button("Run Security Scan"):
+if st.button("RUN ANALYSIS"):
     if target:
-        with st.spinner('Analyzing...'):
-            time.sleep(2) # Artificial intelligence delay
-            if "google" in target.lower() or "apple" in target.lower():
-                st.success(f"✅ {target} is Verified and Safe.")
+        with st.spinner('Scanning...'):
+            time.sleep(1.5)
+            if "google" in target.lower():
+                st.success(f"✅ VERIFIED: {target} is safe.")
             else:
-                st.error(f"🚨 WARNING: {target} matches known Phishing patterns!")
-                st.warning("Recommendation: Do not click links from this source.")
+                st.error(f"🚨 ALERT: Potential threat found on {target}.")
     else:
-        st.info("Please enter a URL to scan.")
+        st.info("Input required.")
 
 # --- DATA VISUALIZATION ---
 st.divider()
-st.subheader("Attack Vectors (Last 24h)")
-chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['Phishing', 'DDoS', 'Brute Force'])
+st.subheader("📊 Traffic Distribution")
+chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
 st.line_chart(chart_data)
