@@ -10,93 +10,105 @@ TAGLINE = "Autonomous Neural Defense"
 
 st.set_page_config(page_title=BRAND_NAME, layout="wide", initial_sidebar_state="expanded")
 
-# --- FORCE DARK THEME & VISIBILITY CSS ---
+# --- CUSTOM CSS: HIGH-CONTRAST CYBER THEME ---
 st.markdown(f"""
     <style>
-    /* Force Dark Background for the whole app */
+    /* Force Deep Navy Background */
     .stApp {{
         background-color: #020617;
     }}
     
-    /* Sidebar styling */
+    /* Sidebar Styling */
     section[data-testid="stSidebar"] {{
         background-color: #0f172a !important;
+        border-right: 1px solid #1e293b;
     }}
 
-    /* Metric Box Visibility Fix */
+    /* GLOWING METRIC CARDS */
     div[data-testid="metric-container"] {{
-        background-color: #1e293b;
-        border: 1px solid #38bdf8;
-        padding: 15px;
-        border-radius: 10px;
-        color: white !important;
+        background-color: #1e293b !important;
+        border: 1px solid #38bdf8 !important;
+        padding: 20px !important;
+        border-radius: 15px !important;
+        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.1);
     }}
+    
+    /* Metric Text Visibility */
     [data-testid="stMetricValue"] {{
         color: #38bdf8 !important;
+        font-family: 'Courier New', monospace;
     }}
     [data-testid="stMetricLabel"] {{
         color: #f8fafc !important;
+        font-weight: bold !important;
     }}
 
-    /* Text Colors */
+    /* Main Text Visibility */
     h1, h2, h3, p, span {{
         color: #f8fafc !important;
     }}
     
-    /* Button Styling */
+    /* Input & Button Styling */
+    .stTextInput>div>div>input {{
+        background-color: #0f172a !important;
+        color: white !important;
+        border: 1px solid #38bdf8 !important;
+    }}
     .stButton>button {{
-        background-color: #38bdf8;
-        color: #020617;
-        font-weight: bold;
+        background-color: #38bdf8 !important;
+        color: #020617 !important;
+        font-weight: bold !important;
+        width: 100%;
+        border-radius: 10px;
     }}
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR: LOGO & TELEMETRY ---
+# --- SIDEBAR: LOGO & STATUS ---
 try:
     logo = Image.open("vantix.png")
     st.sidebar.image(logo, use_container_width=True)
 except:
-    st.sidebar.title(f"🛡️ {BRAND_NAME}")
+    st.sidebar.header(f"🛡️ {BRAND_NAME}")
 
-st.sidebar.caption(f"v1.0.5 | {TAGLINE}")
+st.sidebar.caption(f"v1.0.6 | {TAGLINE}")
 st.sidebar.divider()
-st.sidebar.subheader("Live Telemetry")
-st.sidebar.caption("🤖 Neural Engine: Active")
-st.sidebar.caption("📡 Node Sync: 100%")
+st.sidebar.subheader("📡 System Telemetry")
+st.sidebar.info("🤖 Neural Engine: ACTIVE")
+st.sidebar.info("🌐 Global Mesh: SYNCED")
 
 if st.sidebar.button("🚨 EMERGENCY LOCKDOWN"):
-    st.sidebar.error("PROTOCOL INITIATED")
+    st.sidebar.error("CRITICAL: LOCKDOWN INITIATED")
 
-# --- MAIN INTERFACE ---
-st.title(f"🛡️ {BRAND_NAME} | Enterprise Command")
-st.write(f"**System Status:** 🟢 Optimal | **Global Load:** 14%")
+# --- MAIN DASHBOARD ---
+st.title(f"🛡️ {BRAND_NAME} | Command Center")
+st.write(f"**Enterprise Security Protocol:** {TAGLINE}")
 
-# --- METRICS SECTION ---
+# --- METRIC GRID ---
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Active Threats", "14", "+2")
 col2.metric("Nodes Protected", "1,850", "100%")
 col3.metric("Blocked IPs", "912", "+12%")
 col4.metric("Risk Index", "Stable", "-5%")
 
-# --- THE SCANNER ---
+# --- NEURAL SCANNER ---
 st.divider()
 st.subheader("🔍 Vantix Neural Scanner")
-target = st.text_input("Enter URL/IP for analysis:", placeholder="https://suspicious-link.com")
+target = st.text_input("Enter URL or IP for Deep Analysis:", placeholder="https://threat-check.io")
 
-if st.button("RUN NEURAL ANALYSIS"):
+if st.button("EXECUTE NEURAL SCAN"):
     if target:
-        with st.spinner('Accessing Vantix Global Mesh...'):
+        with st.spinner('Scouring Global Threat Mesh...'):
             time.sleep(2)
-            if "google" in target.lower():
+            if "google" in target.lower() or "apple" in target.lower():
                 st.success(f"✅ VERIFIED SAFE: {target}")
             else:
-                st.error(f"🚨 BREACH WARNING: Malicious signatures detected!")
+                st.error(f"🚨 BREACH DETECTED: {target} flagged as MALICIOUS.")
     else:
-        st.info("Input required for scan.")
+        st.warning("Please enter a valid target.")
 
 # --- DATA VISUALIZATION ---
 st.divider()
-st.subheader("Attack Vectors (Last 24h)")
-chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['DDoS', 'Phishing', 'Brute Force'])
+st.subheader("📊 Network Traffic Analysis")
+chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound Scans', 'Outbound Blocks'])
 st.area_chart(chart_data)
