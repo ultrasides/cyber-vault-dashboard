@@ -59,7 +59,7 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR: LOGO, STATUS & NEWS ---
+# --- SIDEBAR: LOGO, STATUS & LIVE FEED ---
 with st.sidebar:
     try:
         logo = Image.open("vantix.png")
@@ -72,19 +72,15 @@ with st.sidebar:
     
     st.subheader("System Health")
     st.write("✅ All Nodes Active")
-    st.write("✅ Firewall Layer 7: Enabled")
-    
-    # --- LIVE THREAT FEED (SIDEBAR) ---
+    st.write("✅ Neural Mesh: Online")
+
     st.divider()
-    st.subheader("📡 Live Threat Feed")
-    st.caption("Feb 2, 2026")
-    news = [
-        "⚠️ FCC warns of telecom ransomware",
-        "🌐 AI exploits found in browsers",
-        "🔒 MS begins NTLM phase-out"
-    ]
-    for item in news:
-        st.markdown(f"**{item}**")
+    st.subheader("📡 Live Intelligence")
+    st.caption("Updated: Feb 2, 2026")
+    # Real-time news snippets
+    st.markdown("**[URGENT]** FCC warns of telecom ransomware")
+    st.markdown("**[NEW]** AI-based browser exploits detected")
+    st.markdown("**[GLOBAL]** MS begins NTLM phase-out")
     
     st.divider()
     if st.button("🚨 EMERGENCY LOCKDOWN"):
@@ -101,16 +97,16 @@ col2.metric("Nodes Protected", "1,850", "100%")
 col3.metric("Blocked IPs", "912", "+12%")
 col4.metric("Risk Index", "Stable", "-5%")
 
-# --- NEW: GLOBAL THREAT MAP ---
+# --- GLOBAL THREAT MAP ---
 st.divider()
 st.subheader("🌐 Global Threat Intelligence Mesh")
-# Generate random global points
+# Generate random coordinates for visual effect
 map_data = pd.DataFrame(
     np.random.randn(50, 2) / [10, 20] + [25, 10], 
     columns=['lat', 'lon']
 )
 st.map(map_data, color="#1e40af", size=25)
-st.caption("📍 Blue indicators represent high-risk IP origins being mitigated by Vantix.")
+st.caption("📍 Blue indicators represent high-risk IP origins currently being mitigated by Vantix.")
 
 # --- NEURAL SCANNER ---
 st.divider()
