@@ -11,6 +11,10 @@ TAGLINE = "Autonomous Neural Defense"
 
 st.set_page_config(page_title=f"{BRAND_NAME} | Command Center", layout="wide", initial_sidebar_state="expanded")
 
+# --- INITIALIZE SESSION STATE FOR REAL-TIME DATA ---
+if 'heartbeat_data' not in st.session_state:
+    st.session_state.heartbeat_data = pd.DataFrame(np.random.randn(20, 1), columns=['Neural Load'])
+
 # --- SIDEBAR: LOGO, STATUS & DEFENSE TOGGLE ---
 with st.sidebar:
     try:
@@ -19,7 +23,7 @@ with st.sidebar:
     except:
         st.title(f"🛡️ {BRAND_NAME}")
     
-    st.caption(f"Enterprise Security | v1.2.5")
+    st.caption(f"Enterprise Security | v1.3.0")
     st.divider()
 
     # DEFENSE PROTOCOL TOGGLE
@@ -37,8 +41,9 @@ with st.sidebar:
 
     st.divider()
     st.subheader("System Health")
+    status_icon = "🔴" if defense_mode else "✅"
+    st.write(f"{status_icon} Neural Mesh: {'OVERDRIVE' if defense_mode else 'ONLINE'}")
     st.write("✅ All Nodes Active")
-    st.write("✅ Neural Mesh: Online")
 
     st.divider()
     st.subheader("📡 Live Intelligence")
@@ -64,7 +69,6 @@ st.markdown(f"""
         background-color: #f8fafc !important;
         border-right: 1px solid #e2e8f0;
     }}
-    /* Metric Boxes dynamic update */
     div[data-testid="metric-container"] {{
         background-color: {bg_color} !important;
         border: 2px solid {primary_color} !important;
@@ -73,7 +77,6 @@ st.markdown(f"""
     }}
     [data-testid="stMetricValue"] {{ color: {primary_color} !important; }}
     
-    /* Dynamic Button color */
     .stButton>button {{
         background-color: {primary_color} !important;
         color: white !important;
@@ -90,12 +93,11 @@ st.title(f"🛡️ {BRAND_NAME}{status_suffix}")
 st.write(f"Official Security Dashboard for {BRAND_NAME} Neural Systems.")
 
 # --- METRICS SECTION ---
-# Values slightly "spike" when defense mode is on for realism
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("Active Threats", "14" if not defense_mode else "0", "+2" if not defense_mode else "-14")
+col1.metric("Active Threats", "0" if defense_mode else "14", "-100%" if defense_mode else "+2")
 col2.metric("Nodes Protected", "1,850", "100%")
-col3.metric("Blocked IPs", "912", "+12%")
-col4.metric("Risk Index", "Stable" if not defense_mode else "SECURED", "-5%")
+col3.metric("Blocked IPs", "1,402" if defense_mode else "912", "+490" if defense_mode else "+12%")
+col4.metric("Risk Index", "SECURED" if defense_mode else "Stable", "-100%" if defense_mode else "-5%")
 
 # --- GLOBAL THREAT MAP ---
 st.divider()
@@ -104,7 +106,6 @@ map_data = pd.DataFrame(
     np.random.randn(50, 2) / [10, 20] + [25, 10], 
     columns=['lat', 'lon']
 )
-# Map dots turn red in defense mode
 map_color = "#dc2626" if defense_mode else "#1e40af"
 st.map(map_data, color=map_color, size=25)
 
@@ -117,22 +118,27 @@ with col_left:
     target = st.text_input("Analyze URL or IP Address:", placeholder="e.g., example.com")
     if st.button("RUN ANALYSIS"):
         if target:
-            with st.spinner('Scanning...'):
-                time.sleep(1.5)
-                st.success(f"Analysis complete for {target}.")
+            with st.spinner('Accessing Vantix Neural Database...'):
+                time.sleep(1.2)
+                st.success(f"Analysis complete: {target} is currently filtered.")
         else:
             st.info("Input required.")
 
 with col_right:
-    st.subheader("📊 Traffic Analysis")
-    chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
-    st.area_chart(chart_data, color=primary_color)
+    st.subheader("🧠 Neural Heartbeat (Live Pulse)")
+    # Updating the heartbeat data for simulation
+    new_val = np.random.randn(1, 1)
+    st.session_state.heartbeat_data = pd.concat([st.session_state.heartbeat_data, pd.DataFrame(new_val, columns=['Neural Load'])], ignore_index=True).iloc[-20:]
+    
+    st.line_chart(st.session_state.heartbeat_data, color=primary_color)
+    if st.button("🔄 REFRESH PULSE"):
+        st.rerun()
 
 # --- AUDIT LOGS ---
 st.divider()
 st.subheader("📑 Recent Activity Logs")
 audit_data = pd.DataFrame([
-    {"Timestamp": "13:45:02", "Event": "Neural Mesh Handshake", "Status": "PASS"},
+    {"Timestamp": datetime.now().strftime('%H:%M:%S'), "Event": "Neural Mesh Handshake", "Status": "PASS"},
     {"Timestamp": "13:42:10", "Event": "Active Defense Toggle", "Status": "MANUAL_ON" if defense_mode else "MONITORING"},
     {"Timestamp": "13:30:55", "Event": "System Optimization", "Status": "SUCCESS"},
 ])
