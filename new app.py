@@ -129,3 +129,8 @@ st.divider()
 st.subheader("📊 Traffic Distribution")
 chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
 st.line_chart(chart_data)
+# --- DATA VISUALIZATION ---
+st.divider()
+st.subheader("📊 Traffic Distribution")
+chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
+st.line_chart(chart_data)
