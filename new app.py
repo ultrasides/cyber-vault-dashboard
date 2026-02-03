@@ -3,58 +3,41 @@ import pandas as pd
 import numpy as np
 import time
 from PIL import Image
+from datetime import datetime
 
 # --- BRAND CONFIGURATION ---
 BRAND_NAME = "Vantix"
 TAGLINE = "Autonomous Neural Defense"
 
-st.set_page_config(page_title=BRAND_NAME, layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title=f"{BRAND_NAME} | Command Center", layout="wide", initial_sidebar_state="expanded")
 
 # --- LIGHT THEME CSS ---
 st.markdown(f"""
     <style>
-    /* 1. Background to White */
-    .stApp {{
-        background-color: #ffffff !important;
-    }}
-    
-    /* 2. Headings to Black */
+    .stApp {{ background-color: #ffffff !important; }}
     h1, h2, h3, h4, h5, h6, [data-testid="stHeader"] {{
         color: #000000 !important;
         font-family: 'Inter', sans-serif;
         font-weight: 800 !important;
     }}
-
-    /* 3. Text to Blue */
-    p, span, label, div, .stMarkdown {{
-        color: #1e40af !important; /* Deep Royal Blue */
-    }}
-
-    /* Sidebar Styling (Slight Grey for contrast) */
+    p, span, label, div, .stMarkdown {{ color: #1e40af !important; }}
     section[data-testid="stSidebar"] {{
         background-color: #f8fafc !important;
         border-right: 1px solid #e2e8f0;
     }}
-
-    /* Metric Boxes (Light Blue Border) */
     div[data-testid="metric-container"] {{
         background-color: #f0f9ff !important;
         border: 2px solid #3b82f6 !important;
         padding: 15px !important;
         border-radius: 10px !important;
     }}
-    
-    /* Metric Values (Keep them distinct) */
-    [data-testid="stMetricValue"] {{
-        color: #1d4ed8 !important;
-    }}
-
-    /* Buttons (Solid Blue) */
+    [data-testid="stMetricValue"] {{ color: #1d4ed8 !important; }}
     .stButton>button {{
         background-color: #2563eb !important;
         color: white !important;
         border-radius: 6px !important;
         border: none !important;
+        width: 100%;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -76,8 +59,7 @@ with st.sidebar:
 
     st.divider()
     st.subheader("📡 Live Intelligence")
-    st.caption("Updated: Feb 3, 2026")
-    # Real-time news snippets
+    st.caption(f"Updated: {datetime.now().strftime('%b %d, %Y')}")
     st.markdown("**[URGENT]** FCC warns of telecom ransomware")
     st.markdown("**[NEW]** AI-based browser exploits detected")
     st.markdown("**[GLOBAL]** MS begins NTLM phase-out")
@@ -100,7 +82,6 @@ col4.metric("Risk Index", "Stable", "-5%")
 # --- GLOBAL THREAT MAP ---
 st.divider()
 st.subheader("🌐 Global Threat Intelligence Mesh")
-# Generate random coordinates for visual effect
 map_data = pd.DataFrame(
     np.random.randn(50, 2) / [10, 20] + [25, 10], 
     columns=['lat', 'lon']
@@ -108,29 +89,53 @@ map_data = pd.DataFrame(
 st.map(map_data, color="#1e40af", size=25)
 st.caption("📍 Blue indicators represent high-risk IP origins currently being mitigated by Vantix.")
 
-# --- NEURAL SCANNER ---
+# --- TOOLS SECTION: SCANNER & TRAFFIC ---
 st.divider()
-st.subheader("🔍 Security Scanner")
-target = st.text_input("Analyze URL or IP Address:", placeholder="e.g., example.com")
+col_left, col_right = st.columns(2)
 
-if st.button("RUN ANALYSIS"):
-    if target:
-        with st.spinner('Scanning...'):
-            time.sleep(1.5)
-            if "google" in target.lower():
-                st.success(f"✅ VERIFIED: {target} is safe.")
-            else:
-                st.error(f"🚨 ALERT: Potential threat found on {target}.")
-    else:
-        st.info("Input required.")
+with col_left:
+    st.subheader("🔍 Security Scanner")
+    target = st.text_input("Analyze URL or IP Address:", placeholder="e.g., example.com")
+    if st.button("RUN ANALYSIS"):
+        if target:
+            with st.spinner('Scanning...'):
+                time.sleep(1.5)
+                if "google" in target.lower():
+                    st.success(f"✅ VERIFIED: {target} is safe.")
+                else:
+                    st.error(f"🚨 ALERT: Potential threat found on {target}.")
+        else:
+            st.info("Input required.")
 
-# --- DATA VISUALIZATION ---
+with col_right:
+    st.subheader("📊 Traffic Analysis")
+    chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
+    st.area_chart(chart_data)
+
+# --- AUDIT LOGS ---
 st.divider()
-st.subheader("📊 Traffic Distribution")
-chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
-st.line_chart(chart_data)
-# --- DATA VISUALIZATION ---
+st.subheader("📑 Recent Activity Logs")
+audit_data = pd.DataFrame([
+    {"Timestamp": "13:45:02", "Event": "Neural Mesh Handshake", "Status": "PASS"},
+    {"Timestamp": "13:42:10", "Event": "IP Block (Brute Force)", "Status": "BLOCK"},
+    {"Timestamp": "13:30:55", "Event": "System Optimization", "Status": "SUCCESS"},
+    {"Timestamp": "13:15:22", "Event": "Database Encryption", "Status": "PASS"},
+])
+st.table(audit_data)
+
+# --- REPORT EXPORT ---
 st.divider()
-st.subheader("📊 Traffic Distribution")
-chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
-st.line_chart(chart_data)
+st.subheader("📄 Export Intelligence Report")
+
+@st.cache_data
+def convert_df_to_csv(df):
+    return df.to_csv(index=False).encode('utf-8')
+
+csv_report = convert_df_to_csv(audit_data)
+
+st.download_button(
+    label="📩 DOWNLOAD SECURITY REPORT",
+    data=csv_report,
+    file_name=f"Vantix_Report_{datetime.now().strftime('%Y%m%d')}.csv",
+    mime="text/csv",
+)
