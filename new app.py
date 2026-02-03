@@ -11,7 +11,7 @@ TAGLINE = "Autonomous Neural Defense"
 
 st.set_page_config(page_title=f"{BRAND_NAME} | Command Center", layout="wide", initial_sidebar_state="expanded")
 
-# --- INITIALIZE SESSION STATE FOR REAL-TIME DATA ---
+# --- INITIALIZE SESSION STATE ---
 if 'heartbeat_data' not in st.session_state:
     st.session_state.heartbeat_data = pd.DataFrame(np.random.randn(20, 1), columns=['Neural Load'])
 
@@ -30,9 +30,8 @@ with st.sidebar:
     st.subheader("🛡️ Defense Protocol")
     defense_mode = st.toggle("ACTIVE NEURAL DEFENSE", value=False)
     
-    # Dynamic Styling Variables
-    primary_color = "#dc2626" if defense_mode else "#2563eb" # Red vs Blue
-    bg_color = "#fef2f2" if defense_mode else "#f0f9ff"      # Light Red vs Light Blue
+    primary_color = "#dc2626" if defense_mode else "#2563eb" 
+    bg_color = "#fef2f2" if defense_mode else "#f0f9ff"      
     
     if defense_mode:
         st.warning("NEURAL SHIELD: ENGAGED")
@@ -41,8 +40,8 @@ with st.sidebar:
 
     st.divider()
     st.subheader("System Health")
-    status_icon = "🔴" if defense_mode else "✅"
-    st.write(f"{status_icon} Neural Mesh: {'OVERDRIVE' if defense_mode else 'ONLINE'}")
+    health_icon = "🔴" if defense_mode else "✅"
+    st.write(f"{health_icon} Neural Mesh: {'OVERDRIVE' if defense_mode else 'ONLINE'}")
     st.write("✅ All Nodes Active")
 
     st.divider()
@@ -90,7 +89,6 @@ st.markdown(f"""
 # --- MAIN DASHBOARD ---
 status_suffix = " | DEFENSE ACTIVE" if defense_mode else " | Command Center"
 st.title(f"🛡️ {BRAND_NAME}{status_suffix}")
-st.write(f"Official Security Dashboard for {BRAND_NAME} Neural Systems.")
 
 # --- METRICS SECTION ---
 col1, col2, col3, col4 = st.columns(4)
@@ -106,8 +104,7 @@ map_data = pd.DataFrame(
     np.random.randn(50, 2) / [10, 20] + [25, 10], 
     columns=['lat', 'lon']
 )
-map_color = "#dc2626" if defense_mode else "#1e40af"
-st.map(map_data, color=map_color, size=25)
+st.map(map_data, color=primary_color, size=25)
 
 # --- TOOLS SECTION ---
 st.divider()
@@ -118,18 +115,17 @@ with col_left:
     target = st.text_input("Analyze URL or IP Address:", placeholder="e.g., example.com")
     if st.button("RUN ANALYSIS"):
         if target:
-            with st.spinner('Accessing Vantix Neural Database...'):
+            with st.spinner('Accessing Neural Database...'):
                 time.sleep(1.2)
-                st.success(f"Analysis complete: {target} is currently filtered.")
+                st.success(f"Analysis complete: {target} is clean.")
         else:
             st.info("Input required.")
 
 with col_right:
     st.subheader("🧠 Neural Heartbeat (Live Pulse)")
-    # Updating the heartbeat data for simulation
+    # Update pulse data
     new_val = np.random.randn(1, 1)
     st.session_state.heartbeat_data = pd.concat([st.session_state.heartbeat_data, pd.DataFrame(new_val, columns=['Neural Load'])], ignore_index=True).iloc[-20:]
-    
     st.line_chart(st.session_state.heartbeat_data, color=primary_color)
     if st.button("🔄 REFRESH PULSE"):
         st.rerun()
@@ -144,16 +140,6 @@ audit_data = pd.DataFrame([
 ])
 st.table(audit_data)
 
-# --- REPORT EXPORT ---
-st.divider()
-@st.cache_data
-def convert_df_to_csv(df):
-    return df.to_csv(index=False).encode('utf-8')
-
-csv_report = convert_df_to_csv(audit_data)
-st.download_button(
-    label="📩 DOWNLOAD SECURITY REPORT",
-    data=csv_report,
-    file_name=f"Vantix_Report_{datetime.now().strftime('%Y%m%d')}.csv",
-    mime="text/csv",
-)
+# --- EXPORT ---
+csv = audit_data.to_csv(index=False).encode('utf-8')
+st.download_button("📩 DOWNLOAD SECURITY REPORT", data=csv, file_name=f"Vantix_Report_{datetime.now().strftime('%Y%m%d')}.csv")
