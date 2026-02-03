@@ -76,7 +76,7 @@ with st.sidebar:
 
     st.divider()
     st.subheader("📡 Live Intelligence")
-    st.caption("Updated: Feb 2, 2026")
+    st.caption("Updated: Feb 3, 2026")
     # Real-time news snippets
     st.markdown("**[URGENT]** FCC warns of telecom ransomware")
     st.markdown("**[NEW]** AI-based browser exploits detected")
