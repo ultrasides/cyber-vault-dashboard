@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
+import requests
 from PIL import Image
 from datetime import datetime
 
@@ -10,6 +11,13 @@ BRAND_NAME = "Vantix"
 TAGLINE = "Autonomous Neural Defense"
 
 st.set_page_config(page_title=f"{BRAND_NAME} | Command Center", layout="wide", initial_sidebar_state="expanded")
+
+# --- AUTHENTICATION & SECRETS ---
+# This pulls your API key from .streamlit/secrets.toml (local) or Cloud Secrets (web)
+try:
+    ABUSE_API_KEY = st.secrets["ABUSE_API_KEY"]
+except:
+    ABUSE_API_KEY = None
 
 # --- INITIALIZE SESSION STATE ---
 if 'heartbeat_data' not in st.session_state:
@@ -26,7 +34,6 @@ with st.sidebar:
     st.caption(f"Enterprise Security | v1.3.0")
     st.divider()
 
-    # DEFENSE PROTOCOL TOGGLE
     st.subheader("🛡️ Defense Protocol")
     defense_mode = st.toggle("ACTIVE NEURAL DEFENSE", value=False)
     
@@ -44,12 +51,6 @@ with st.sidebar:
     st.write(f"{health_icon} Neural Mesh: {'OVERDRIVE' if defense_mode else 'ONLINE'}")
     st.write("✅ All Nodes Active")
 
-    st.divider()
-    st.subheader("📡 Live Intelligence")
-    st.caption(f"Updated: {datetime.now().strftime('%b %d, %Y')}")
-    st.markdown("**[URGENT]** FCC warns of telecom ransomware")
-    st.markdown("**[NEW]** AI-based browser exploits detected")
-    
     st.divider()
     if st.button("🚨 EMERGENCY LOCKDOWN"):
         st.error("LOCKDOWN INITIATED")
@@ -81,7 +82,6 @@ st.markdown(f"""
         color: white !important;
         border-radius: 6px !important;
         border: none !important;
-        width: 100%;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -111,19 +111,46 @@ st.divider()
 col_left, col_right = st.columns(2)
 
 with col_left:
-    st.subheader("🔍 Security Scanner")
-    target = st.text_input("Analyze URL or IP Address:", placeholder="e.g., example.com")
-    if st.button("RUN ANALYSIS"):
-        if target:
-            with st.spinner('Accessing Neural Database...'):
-                time.sleep(1.2)
-                st.success(f"Analysis complete: {target} is clean.")
+    st.subheader("🔍 Neural IP Scanner (LIVE)")
+    target_ip = st.text_input("Enter IP Address for Deep Analysis:", placeholder="e.g., 8.8.8.8")
+    
+    if st.button("EXECUTE NEURAL SCAN"):
+        if not ABUSE_API_KEY:
+            st.error("API Key missing. Add ABUSE_API_KEY to secrets.")
+        elif target_ip:
+            with st.spinner(f'Vantix is interrogating global nodes for {target_ip}...'):
+                url = 'https://api.abuseipdb.com/api/v2/check'
+                params = {'ipAddress': target_ip, 'maxAgeInDays': '90'}
+                headers = {'Accept': 'application/json', 'Key': ABUSE_API_KEY}
+                
+                try:
+                    response = requests.get(url, headers=headers, params=params)
+                    if response.status_code == 200:
+                        data = response.json()['data']
+                        score = data['abuseConfidenceScore']
+                        
+                        st.divider()
+                        if score > 75:
+                            st.error(f"🚨 CRITICAL RISK: {score}% Confidence")
+                        elif score > 20:
+                            st.warning(f"⚠️ SUSPICIOUS: {score}% Confidence")
+                        else:
+                            st.success(f"✅ SECURE: {score}% Confidence")
+                        
+                        # Detailed Data Table
+                        st.table(pd.DataFrame({
+                            "Attribute": ["Country", "Usage", "Reports", "Domain"],
+                            "Intelligence": [data['countryName'], data['usageType'], data['totalReports'], data['domain']]
+                        }))
+                    else:
+                        st.error("Neural Link Rejected: Invalid IP format or API error.")
+                except Exception as e:
+                    st.error("Connection Interrupted.")
         else:
-            st.info("Input required.")
+            st.info("Neural input required.")
 
 with col_right:
     st.subheader("🧠 Neural Heartbeat (Live Pulse)")
-    # Update pulse data
     new_val = np.random.randn(1, 1)
     st.session_state.heartbeat_data = pd.concat([st.session_state.heartbeat_data, pd.DataFrame(new_val, columns=['Neural Load'])], ignore_index=True).iloc[-20:]
     st.line_chart(st.session_state.heartbeat_data, color=primary_color)
@@ -135,7 +162,7 @@ st.divider()
 st.subheader("📑 Recent Activity Logs")
 audit_data = pd.DataFrame([
     {"Timestamp": datetime.now().strftime('%H:%M:%S'), "Event": "Neural Mesh Handshake", "Status": "PASS"},
-    {"Timestamp": "13:42:10", "Event": "Active Defense Toggle", "Status": "MANUAL_ON" if defense_mode else "MONITORING"},
+    {"Timestamp": "13:42:10", "Event": "Scanner Query Executed", "Status": "COMPLETED"},
     {"Timestamp": "13:30:55", "Event": "System Optimization", "Status": "SUCCESS"},
 ])
 st.table(audit_data)
