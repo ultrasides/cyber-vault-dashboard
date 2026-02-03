@@ -11,7 +11,46 @@ TAGLINE = "Autonomous Neural Defense"
 
 st.set_page_config(page_title=f"{BRAND_NAME} | Command Center", layout="wide", initial_sidebar_state="expanded")
 
-# --- LIGHT THEME CSS ---
+# --- SIDEBAR: LOGO, STATUS & DEFENSE TOGGLE ---
+with st.sidebar:
+    try:
+        logo = Image.open("vantix.png")
+        st.image(logo, use_container_width=True)
+    except:
+        st.title(f"🛡️ {BRAND_NAME}")
+    
+    st.caption(f"Enterprise Security | v1.2.5")
+    st.divider()
+
+    # DEFENSE PROTOCOL TOGGLE
+    st.subheader("🛡️ Defense Protocol")
+    defense_mode = st.toggle("ACTIVE NEURAL DEFENSE", value=False)
+    
+    # Dynamic Styling Variables
+    primary_color = "#dc2626" if defense_mode else "#2563eb" # Red vs Blue
+    bg_color = "#fef2f2" if defense_mode else "#f0f9ff"      # Light Red vs Light Blue
+    
+    if defense_mode:
+        st.warning("NEURAL SHIELD: ENGAGED")
+    else:
+        st.info("SYSTEM STATUS: MONITORING")
+
+    st.divider()
+    st.subheader("System Health")
+    st.write("✅ All Nodes Active")
+    st.write("✅ Neural Mesh: Online")
+
+    st.divider()
+    st.subheader("📡 Live Intelligence")
+    st.caption(f"Updated: {datetime.now().strftime('%b %d, %Y')}")
+    st.markdown("**[URGENT]** FCC warns of telecom ransomware")
+    st.markdown("**[NEW]** AI-based browser exploits detected")
+    
+    st.divider()
+    if st.button("🚨 EMERGENCY LOCKDOWN"):
+        st.error("LOCKDOWN INITIATED")
+
+# --- DYNAMIC THEME CSS ---
 st.markdown(f"""
     <style>
     .stApp {{ background-color: #ffffff !important; }}
@@ -25,15 +64,18 @@ st.markdown(f"""
         background-color: #f8fafc !important;
         border-right: 1px solid #e2e8f0;
     }}
+    /* Metric Boxes dynamic update */
     div[data-testid="metric-container"] {{
-        background-color: #f0f9ff !important;
-        border: 2px solid #3b82f6 !important;
+        background-color: {bg_color} !important;
+        border: 2px solid {primary_color} !important;
         padding: 15px !important;
         border-radius: 10px !important;
     }}
-    [data-testid="stMetricValue"] {{ color: #1d4ed8 !important; }}
+    [data-testid="stMetricValue"] {{ color: {primary_color} !important; }}
+    
+    /* Dynamic Button color */
     .stButton>button {{
-        background-color: #2563eb !important;
+        background-color: {primary_color} !important;
         color: white !important;
         border-radius: 6px !important;
         border: none !important;
@@ -42,42 +84,18 @@ st.markdown(f"""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR: LOGO, STATUS & LIVE FEED ---
-with st.sidebar:
-    try:
-        logo = Image.open("vantix.png")
-        st.image(logo, use_container_width=True)
-    except:
-        st.title(f"🛡️ {BRAND_NAME}")
-    
-    st.caption(f"Enterprise Security | v1.2.0")
-    st.divider()
-    
-    st.subheader("System Health")
-    st.write("✅ All Nodes Active")
-    st.write("✅ Neural Mesh: Online")
-
-    st.divider()
-    st.subheader("📡 Live Intelligence")
-    st.caption(f"Updated: {datetime.now().strftime('%b %d, %Y')}")
-    st.markdown("**[URGENT]** FCC warns of telecom ransomware")
-    st.markdown("**[NEW]** AI-based browser exploits detected")
-    st.markdown("**[GLOBAL]** MS begins NTLM phase-out")
-    
-    st.divider()
-    if st.button("🚨 EMERGENCY LOCKDOWN"):
-        st.error("LOCKDOWN INITIATED")
-
 # --- MAIN DASHBOARD ---
-st.title(f"🛡️ {BRAND_NAME} | Command Center")
+status_suffix = " | DEFENSE ACTIVE" if defense_mode else " | Command Center"
+st.title(f"🛡️ {BRAND_NAME}{status_suffix}")
 st.write(f"Official Security Dashboard for {BRAND_NAME} Neural Systems.")
 
 # --- METRICS SECTION ---
+# Values slightly "spike" when defense mode is on for realism
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("Active Threats", "14", "+2")
+col1.metric("Active Threats", "14" if not defense_mode else "0", "+2" if not defense_mode else "-14")
 col2.metric("Nodes Protected", "1,850", "100%")
 col3.metric("Blocked IPs", "912", "+12%")
-col4.metric("Risk Index", "Stable", "-5%")
+col4.metric("Risk Index", "Stable" if not defense_mode else "SECURED", "-5%")
 
 # --- GLOBAL THREAT MAP ---
 st.divider()
@@ -86,10 +104,11 @@ map_data = pd.DataFrame(
     np.random.randn(50, 2) / [10, 20] + [25, 10], 
     columns=['lat', 'lon']
 )
-st.map(map_data, color="#1e40af", size=25)
-st.caption("📍 Blue indicators represent high-risk IP origins currently being mitigated by Vantix.")
+# Map dots turn red in defense mode
+map_color = "#dc2626" if defense_mode else "#1e40af"
+st.map(map_data, color=map_color, size=25)
 
-# --- TOOLS SECTION: SCANNER & TRAFFIC ---
+# --- TOOLS SECTION ---
 st.divider()
 col_left, col_right = st.columns(2)
 
@@ -100,39 +119,32 @@ with col_left:
         if target:
             with st.spinner('Scanning...'):
                 time.sleep(1.5)
-                if "google" in target.lower():
-                    st.success(f"✅ VERIFIED: {target} is safe.")
-                else:
-                    st.error(f"🚨 ALERT: Potential threat found on {target}.")
+                st.success(f"Analysis complete for {target}.")
         else:
             st.info("Input required.")
 
 with col_right:
     st.subheader("📊 Traffic Analysis")
     chart_data = pd.DataFrame(np.random.randn(20, 2), columns=['Inbound', 'Outbound'])
-    st.area_chart(chart_data)
+    st.area_chart(chart_data, color=primary_color)
 
 # --- AUDIT LOGS ---
 st.divider()
 st.subheader("📑 Recent Activity Logs")
 audit_data = pd.DataFrame([
     {"Timestamp": "13:45:02", "Event": "Neural Mesh Handshake", "Status": "PASS"},
-    {"Timestamp": "13:42:10", "Event": "IP Block (Brute Force)", "Status": "BLOCK"},
+    {"Timestamp": "13:42:10", "Event": "Active Defense Toggle", "Status": "MANUAL_ON" if defense_mode else "MONITORING"},
     {"Timestamp": "13:30:55", "Event": "System Optimization", "Status": "SUCCESS"},
-    {"Timestamp": "13:15:22", "Event": "Database Encryption", "Status": "PASS"},
 ])
 st.table(audit_data)
 
 # --- REPORT EXPORT ---
 st.divider()
-st.subheader("📄 Export Intelligence Report")
-
 @st.cache_data
 def convert_df_to_csv(df):
     return df.to_csv(index=False).encode('utf-8')
 
 csv_report = convert_df_to_csv(audit_data)
-
 st.download_button(
     label="📩 DOWNLOAD SECURITY REPORT",
     data=csv_report,
